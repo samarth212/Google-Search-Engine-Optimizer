@@ -7,9 +7,18 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+
+    <h1>Key words</h1>
     <form method="post">
         <input type="text" name="keywords" placeholder="Enter keywords">
         <button type="submit">Search</button>
     </form>
+
+    <h1>Optimized Search Results</h1>
+    <ul>
+        {% for url in urls %}
+        <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
