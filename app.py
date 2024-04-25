@@ -18,6 +18,7 @@ def google_search(keywords):
     url = f"https://www.google.com/search?q={keywords}"
     headers = {'User-Agent': 'Mozilla/5.0'}
     response = requests.get(url, headers=headers)
+    print(response.text)
     return response.text
 
 def filter_urls(content, keywords):
