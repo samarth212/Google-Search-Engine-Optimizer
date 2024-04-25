@@ -8,6 +8,30 @@
 </head>
 <body>
 
+
+
+    <form method="POST">
+        <label for="keywords">Search terms:</label>
+        <input type="text" id="keywords" name="keywords">
+        <button type="submit">Search</button>
+    </form>
+
+    <h1>Search Results for: {{ search_terms }}</h1>
+    <ul>
+        {% for url in urls %}
+            <li><a href="{{ url }}">{{ url }}</a></li>
+        {% endfor %}
+    </ul>
+
+    
+</body>
+</html>
+
+
+
+
+<!--
+
     <h1>Key words</h1>
     <form method="post">
         <input type="text" name="keywords" placeholder="Enter keywords">
@@ -20,5 +44,4 @@
         <li><a href="{{ url }}" target="_blank">{{ url }}</a></li>
         {% endfor %}
     </ul>
-</body>
-</html>
+-->

@@ -1,34 +1,30 @@
 from flask import Flask, render_template, request
-import requests
-from bs4 import BeautifulSoup
+from googleapiclient.discovery import build
+
+API_KEY = 'AIzaSyBFK7YUOZ0ZSHKmOiVsy638y4RkrsGSIRs'
+
+SEARCH_ENGINE_ID = '62e3fbd85dd204709'
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
-        keywords = request.form['keywords']
-        search_results = google_search(keywords)
-        filtered_urls = filter_urls(search_results, keywords)
-        return render_template('index.html', urls=filtered_urls)
+        try:
+            keywords = request.form['keywords']
+            service = build("customsearch", "v1", developerKey=API_KEY)
+            
+            search_params = {
+                "cx": SEARCH_ENGINE_ID,
+                "q": keywords,
+            }
+            
+            search_results = service.cse().list(**search_params).execute()
+            
+            urls = [item['link'] for item in search_results.get('items', [])]
+            return render_template('index.html', urls=urls, search_terms=keywords)
+        except Exception as e:
+            return f"Error: {str(e)}"
     else:
-        return render_template('index.html', urls=[])
+        return render_template('index.html', urls=[], search_terms="")
 
-def google_search(keywords):
-    url = f"https://www.google.com/search?q={keywords}"
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    response = requests.get(url, headers=headers)
-    print(response.text)
-    return response.text
-
-def filter_urls(content, keywords):
-    soup = BeautifulSoup(content, 'html.parser')
-    urls = []
-    for link in soup.find_all('a'):
-        url = link.get('href')
-        if url.startswith('http') and any(keyword in link.text for keyword in keywords):
-            urls.append(url)
-    return urls
-
-if __name__ == '__main__':
-    app.run(debug=True)
